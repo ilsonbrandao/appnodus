@@ -21,6 +21,9 @@ type Lead = {
     email: string;
     role: string | null;
     phone: string | null;
+    instagram: string | null;
+    website: string | null;
+    segment: string | null;
     aiAnalysis: string | null;
     quizData: Record<string, unknown> | null;
 };
@@ -61,7 +64,7 @@ export function LeadDetailsDialog({ lead, open, onOpenChange }: LeadDetailsDialo
                     </div>
 
                     {/* Contact Details */}
-                    <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
                         <div>
                             <span className="text-neutral-500 block text-xs uppercase tracking-wider mb-1">Email</span>
                             <span className="font-medium">{lead.email}</span>
@@ -69,6 +72,30 @@ export function LeadDetailsDialog({ lead, open, onOpenChange }: LeadDetailsDialo
                         <div>
                             <span className="text-neutral-500 block text-xs uppercase tracking-wider mb-1">Telefone</span>
                             <span className="font-medium">{lead.phone || "Não informado"}</span>
+                        </div>
+                        <div>
+                            <span className="text-neutral-500 block text-xs uppercase tracking-wider mb-1">Instagram</span>
+                            <span className="font-medium">
+                                {lead.instagram ? (
+                                    <a href={`https://instagram.com/${lead.instagram.replace('@', '')}`} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">
+                                        {lead.instagram}
+                                    </a>
+                                ) : "-"}
+                            </span>
+                        </div>
+                        <div>
+                            <span className="text-neutral-500 block text-xs uppercase tracking-wider mb-1">Site</span>
+                            <span className="font-medium">
+                                {lead.website ? (
+                                    <a href={lead.website.startsWith('http') ? lead.website : `https://${lead.website}`} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">
+                                        Link
+                                    </a>
+                                ) : "-"}
+                            </span>
+                        </div>
+                        <div>
+                            <span className="text-neutral-500 block text-xs uppercase tracking-wider mb-1">Segmento</span>
+                            <span className="font-medium">{lead.segment || "Geral"}</span>
                         </div>
                         <div>
                             <span className="text-neutral-500 block text-xs uppercase tracking-wider mb-1">Status</span>

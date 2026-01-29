@@ -15,6 +15,9 @@ type Lead = {
     email: string;
     role: string | null;
     phone: string | null;
+    instagram: string | null;
+    website: string | null;
+    segment: string | null;
     aiAnalysis: string | null;
     quizData: Record<string, unknown> | null;
 };
