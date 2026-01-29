@@ -2,7 +2,7 @@
 
 import { db } from '@/lib/db';
 import { leads } from '@/lib/db/schema';
-import { aiModel } from '@/lib/ai/client';
+import { generateAIAnalysis } from '@/lib/ai/client';
 import { revalidatePath } from 'next/cache';
 
 // Interface genérica para o Quiz
@@ -21,6 +21,8 @@ interface QuizSubmission {
 export async function submitQuiz(data: QuizSubmission) {
     try {
         console.log("Submitting quiz for:", data.email);
+        console.log("DEBUG: Using API Key ending in:", process.env.GEMINI_API_KEY ? process.env.GEMINI_API_KEY.slice(-4) : "NONE");
+
 
         // 1. Prepare Prompt for Gemini
         const prompt = `
@@ -52,9 +54,10 @@ export async function submitQuiz(data: QuizSubmission) {
       }
     `;
 
-        // 2. Call Gemini
-        const result = await aiModel.generateContent(prompt);
-        const responseText = result.response.text();
+        // 2. Call Gemini (Direct REST)
+        const responseText = await generateAIAnalysis(prompt);
+        // const result = await aiModel.generateContent(prompt);
+        // const responseText = result.response.text();
 
         // Clean up markdown code blocks if present
         const cleanJson = responseText.replace(/```json/g, '').replace(/```/g, '').trim();

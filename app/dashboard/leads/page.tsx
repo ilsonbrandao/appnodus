@@ -1,6 +1,7 @@
 import { db } from '@/lib/db';
 import { leads } from '@/lib/db/schema';
 import { LeadsKanban } from '@/components/dashboard/LeadsKanban';
+import { ExportLeadsButton } from '@/components/dashboard/ExportLeadsButton';
 import { desc, type InferSelectModel } from 'drizzle-orm';
 
 type Lead = InferSelectModel<typeof leads>;
@@ -19,9 +20,9 @@ export default async function LeadsPage() {
         <div className="h-full flex flex-col space-y-4">
             <div className="flex items-center justify-between">
                 <h2 className="text-3xl font-bold tracking-tight text-neutral-900 dark:text-white">Gestão de Leads</h2>
-                <button className="bg-neutral-900 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-neutral-800">
-                    Novo Lead (Manual)
-                </button>
+                <div className="flex gap-2">
+                    <ExportLeadsButton leads={allLeads as any} />
+                </div>
             </div>
             <LeadsKanban initialLeads={allLeads as unknown as any} />
         </div>

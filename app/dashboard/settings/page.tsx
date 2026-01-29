@@ -1,115 +1,121 @@
-'use client';
+import { createClient } from '@/utils/supabase/server';
+import Link from 'next/link';
+import { db } from '@/lib/db';
+import { profiles } from '@/lib/db/schema';
+import { eq } from 'drizzle-orm';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { ProfileSettingsForm } from '@/components/dashboard/ProfileSettingsForm';
+import { DeleteAccountSection } from '@/components/dashboard/DeleteAccountSection';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { User, CreditCard, ShieldAlert } from 'lucide-react';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
-import { Separator } from "@/components/ui/separator";
+export default async function SettingsPage() {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
 
-const profileFormSchema = z.object({
-    fullName: z.string().min(2, {
-        message: "Nome deve ter pelo menos 2 caracteres.",
-    }),
-    email: z.string().email({
-        message: "Email inválido.",
-    }),
-    companyName: z.string().optional(),
-    role: z.string().optional(),
-});
-
-type ProfileFormValues = z.infer<typeof profileFormSchema>;
-
-// This would normally be fetched from the DB
-const defaultValues: Partial<ProfileFormValues> = {
-    fullName: "",
-    email: "",
-    companyName: "",
-    role: "",
-};
-
-export default function SettingsPage() {
-    const form = useForm<ProfileFormValues>({
-        resolver: zodResolver(profileFormSchema),
-        defaultValues,
-        mode: "onChange",
-    });
-
-    function onSubmit(data: ProfileFormValues) {
-        toast.success("Perfil atualizado com sucesso!");
-        console.log(data);
+    // Obter dados do perfil
+    let userProfile = null;
+    if (user) {
+        userProfile = await db.query.profiles.findFirst({
+            where: eq(profiles.id, user.id)
+        });
     }
 
+    const email = user?.email || '';
+    const name = userProfile?.fullName || '';
+
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 max-w-5xl mx-auto w-full pb-10">
             <div>
-                <h3 className="text-2xl font-bold tracking-tight text-neutral-900 dark:text-white">Configurações</h3>
-                <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                    Gerencie suas preferências de conta e notificações.
-                </p>
+                <h2 className="text-3xl font-bold tracking-tight text-neutral-900 dark:text-white">Configurações</h2>
+                <p className="text-neutral-500 dark:text-neutral-400 mt-1">Gerencie sua conta e preferências.</p>
             </div>
+
             <Separator className="my-6" />
 
-            <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
-                <aside className="-mx-4 lg:w-1/5">
-                    <nav className="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
-                        <Button variant="secondary" className="justify-start">Perfil</Button>
-                        <Button variant="ghost" className="justify-start text-neutral-500">Integrações</Button>
-                        <Button variant="ghost" className="justify-start text-neutral-500">Cobrança</Button>
-                    </nav>
-                </aside>
-                <div className="flex-1 lg:max-w-2xl">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Perfil do Usuário</CardTitle>
-                            <CardDescription>
-                                Atualize suas informações pessoais visíveis.
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <form id="profile-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="fullName">Nome Completo</Label>
-                                    <Input id="fullName" placeholder="Seu nome" {...form.register("fullName")} />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="email">Email</Label>
-                                    <Input id="email" disabled placeholder="seu@email.com" {...form.register("email")} />
-                                    <p className="text-[0.8rem] text-neutral-500">O email não pode ser alterado.</p>
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="company">Empresa</Label>
-                                        <Input id="company" placeholder="Sua empresa" {...form.register("companyName")} />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="role">Cargo</Label>
-                                        <Input id="role" placeholder="Seu cargo" {...form.register("role")} />
-                                    </div>
-                                </div>
-                            </form>
-                        </CardContent>
-                        <CardFooter>
-                            <Button type="submit" form="profile-form">Salvar Alterações</Button>
-                        </CardFooter>
-                    </Card>
-
-                    <Card className="mt-6 border-red-200 dark:border-red-900/20">
-                        <CardHeader>
-                            <CardTitle className="text-red-600 dark:text-red-500">Zona de Perigo</CardTitle>
-                            <CardDescription>
-                                Ações irreversíveis para sua conta.
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <Button variant="destructive" className="w-full sm:w-auto">Excluir Conta</Button>
-                        </CardContent>
-                    </Card>
+            <Tabs defaultValue="general" className="w-full space-y-6">
+                <div className="overflow-x-auto pb-2">
+                    <TabsList className="bg-neutral-100 dark:bg-neutral-900 p-1 rounded-lg inline-flex min-w-full sm:min-w-fit">
+                        <TabsTrigger value="general" className="gap-2 px-4 py-2 data-[state=active]:bg-white dark:data-[state=active]:bg-neutral-800 data-[state=active]:shadow-sm">
+                            <User className="size-4" />
+                            <span>Geral</span>
+                        </TabsTrigger>
+                        <TabsTrigger value="billing" className="gap-2 px-4 py-2 data-[state=active]:bg-white dark:data-[state=active]:bg-neutral-800 data-[state=active]:shadow-sm">
+                            <CreditCard className="size-4" />
+                            <span>Planos e Cobrança</span>
+                        </TabsTrigger>
+                        <TabsTrigger value="advanced" className="gap-2 px-4 py-2 data-[state=active]:bg-white dark:data-[state=active]:bg-neutral-800 data-[state=active]:shadow-sm">
+                            <ShieldAlert className="size-4" />
+                            <span>Avançado</span>
+                        </TabsTrigger>
+                    </TabsList>
                 </div>
-            </div>
+
+                <TabsContent value="general" className="space-y-6 animate-in fade-in-50 duration-300 slide-in-from-left-2">
+                    <div className="grid gap-6 md:grid-cols-2">
+                        <div className="md:col-span-1">
+                            <h3 className="text-lg font-medium">Informações Pessoais</h3>
+                            <p className="text-sm text-neutral-500">Atualize seus dados de identificação.</p>
+                        </div>
+                        <div className="md:col-span-2 lg:col-span-1">
+                            <ProfileSettingsForm initialName={name} email={email} />
+                        </div>
+                    </div>
+                </TabsContent>
+
+                <TabsContent value="billing" className="space-y-6 animate-in fade-in-50 duration-300 slide-in-from-left-2">
+                    <div className="grid gap-6 md:grid-cols-2">
+                        <div className="md:col-span-1">
+                            <h3 className="text-lg font-medium">Assinatura</h3>
+                            <p className="text-sm text-neutral-500">Gerencie seu plano e método de pagamento.</p>
+                        </div>
+                        <div className="md:col-span-2 lg:col-span-1">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Plano Atual</CardTitle>
+                                    <CardDescription>Detalhes da sua subscrição ativa.</CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 border rounded-lg bg-indigo-50/50 dark:bg-indigo-900/10 border-indigo-100 dark:border-indigo-800 gap-4">
+                                        <div className="space-y-1">
+                                            <div className="flex items-center gap-2">
+                                                <p className="font-semibold text-indigo-700 dark:text-indigo-300 text-lg">Plano Starter</p>
+                                                <span className="bg-indigo-100 text-indigo-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Ativo</span>
+                                            </div>
+                                            <p className="text-sm text-indigo-600/80 dark:text-indigo-400/80 max-w-[260px]">
+                                                Acesso ilimitado ao Quiz e 50 posts/mês gerados por IA.
+                                            </p>
+                                        </div>
+                                        <Link href="/dashboard/settings/upgrade">
+                                            <Button className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 shadow-sm transition-all hover:scale-[1.02]">
+                                                Fazer Upgrade
+                                            </Button>
+                                        </Link>
+                                    </div>
+                                    <div className="mt-6 text-xs text-neutral-400 flex items-center gap-2">
+                                        <CreditCard className="size-3" />
+                                        <span>Próxima cobrança em: 28/02/2026</span>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
+                    </div>
+                </TabsContent>
+
+                <TabsContent value="advanced" className="space-y-6 animate-in fade-in-50 duration-300 slide-in-from-left-2">
+                    <div className="grid gap-6 md:grid-cols-2">
+                        <div className="md:col-span-1">
+                            <h3 className="text-lg font-medium text-red-600 dark:text-red-400">Zona de Perigo</h3>
+                            <p className="text-sm text-neutral-500">Ações que afetam permanentemente sua conta.</p>
+                        </div>
+                        <div className="md:col-span-2 lg:col-span-1">
+                            <DeleteAccountSection />
+                        </div>
+                    </div>
+                </TabsContent>
+            </Tabs>
         </div>
     );
 }
