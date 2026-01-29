@@ -8,7 +8,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // User requested Gemini 3. Adjust model name as needed when available.
 // For now using a variable to easily switch.
-export const GEMINI_MODEL_NAME = "gemini-pro";
+export const GEMINI_MODEL_NAME = "gemini-1.5-flash";
 
 export const aiModel = genAI.getGenerativeModel({
     model: GEMINI_MODEL_NAME,
