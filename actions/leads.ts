@@ -12,6 +12,9 @@ interface QuizSubmission {
     phone?: string;
     company?: string;
     role?: string;
+    instagram?: string;
+    website?: string;
+    segment?: string;
     answers: Record<string, string>;
 }
 
@@ -28,6 +31,9 @@ export async function submitQuiz(data: QuizSubmission) {
       Nome: ${data.name}
       Cargo: ${data.role || 'N/A'}
       Empresa: ${data.company || 'N/A'}
+      Segmento: ${data.segment || 'Não informado'}
+      Instagram: ${data.instagram || 'Não informado'}
+      Site: ${data.website || 'Não informado'}
       
       Respostas do Quiz:
       ${JSON.stringify(data.answers, null, 2)}
@@ -35,7 +41,8 @@ export async function submitQuiz(data: QuizSubmission) {
       Tarefa:
       1. Calcule um Score de 0 a 100 para este lead (Potencial de compra).
       2. Classifique em uma das categorias: 'Cold', 'Morno', 'Quente', 'Ultra Quente'.
-      3. Forneça uma breve análise justificando a classificação (máx 2 frases).
+      3. Forneça uma breve análise justificando a classificação.
+      4. Dê 2 dicas práticas/específicas para melhorar o Instagram/Posicionamento Digital deste lead no nicho de ${data.segment}.
 
       Retorne APENAS um JSON no seguinte formato, sem markdown:
       {
@@ -72,6 +79,9 @@ export async function submitQuiz(data: QuizSubmission) {
             phone: data.phone,
             company: data.company,
             role: data.role,
+            instagram: data.instagram,
+            website: data.website,
+            segment: data.segment,
             quizData: data.answers,
             score: analysis.score,
             category: analysis.category,

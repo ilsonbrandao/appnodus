@@ -19,6 +19,9 @@ export const leads = pgTable('leads', {
     phone: text('phone'),
     company: text('company'),
     role: text('role'), // Cargo do lead
+    instagram: text('instagram'), // @perfil ou Link
+    website: text('website'), // Site ou LinkedIn
+    segment: text('segment'), // Nicho de mercado
 
     // Dados do Quiz e Qualificação IA
     quizData: jsonb('quiz_data'), // Respostas completas
