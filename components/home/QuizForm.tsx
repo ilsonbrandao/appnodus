@@ -64,7 +64,7 @@ export function QuizForm() {
                 toast.success("Quiz enviado com sucesso! Nossa IA está analisando seu perfil.");
                 reset();
             } else {
-                toast.error("Erro ao enviar quiz. Tente novamente.");
+                toast.error(`Erro: ${result.error}`);
             }
         } catch (error) {
             console.error(error);

@@ -55,7 +55,7 @@ export async function submitQuiz(data: QuizSubmission) {
         let analysis;
         try {
             analysis = JSON.parse(cleanJson);
-        } catch (e) {
+        } catch {
             console.error("Failed to parse AI response", responseText);
             // Fallback
             analysis = {
@@ -83,8 +83,8 @@ export async function submitQuiz(data: QuizSubmission) {
 
         return { success: true, lead: newLead };
 
-    } catch (error) {
-        console.error("Error in submitQuiz:", error);
-        return { success: false, error: "Failed to process submission" };
+    } catch (error: any) {
+        console.error("Error in submitQuiz FULL:", error);
+        return { success: false, error: error.message || "Failed to process submission" };
     }
 }

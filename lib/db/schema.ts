@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, jsonb, integer, uuid, serial, boolean } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, jsonb, integer, uuid, serial } from 'drizzle-orm/pg-core';
 
 // Tabela de Perfis (Vinculada ao Supabase Auth via ID)
 export const profiles = pgTable('profiles', {
