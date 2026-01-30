@@ -14,10 +14,10 @@ export function Header() {
                     </div>
 
                     <nav className="hidden md:flex gap-8">
-                        <Link href="#features" className="text-sm font-medium text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition-colors">
+                        <Link href="/#features" className="text-sm font-medium text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition-colors">
                             Funcionalidades
                         </Link>
-                        <Link href="#pricing" className="text-sm font-medium text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition-colors">
+                        <Link href="/#pricing" className="text-sm font-medium text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition-colors">
                             Planos
                         </Link>
                     </nav>
