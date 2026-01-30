@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from '@/lib/db';
-import { posts } from '@/lib/db/schema';
+import { posts, profiles } from '@/lib/db/schema';
 import { generateAIAnalysis } from '@/lib/ai/client';
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/utils/supabase/server';
@@ -46,6 +46,13 @@ export async function savePost(formData: FormData) {
     const status = formData.get('status') as 'Draft' | 'Scheduled';
 
     try {
+        // Garantir que o perfil existe (fix para erro de FK comum)
+        await db.insert(profiles).values({
+            id: userId,
+            email: user.email!,
+            role: 'user'
+        }).onConflictDoNothing();
+
         await db.insert(posts).values({
             profileId: userId,
             content: content,
@@ -55,8 +62,10 @@ export async function savePost(formData: FormData) {
 
         revalidatePath('/dashboard/posts');
         return { success: true };
-    } catch (error) {
+    } catch (error: any) {
         console.error("Erro ao salvar post:", error);
-        return { error: "Erro ao salvar no banco de dados." };
+        // Retornar mensagem detalhada para debug (em produção idealmente seria logado e retornado um ID de erro)
+        // Mas para resolver o problema agora, precisamos saber o que é.
+        return { error: `Erro ao salvar: ${error.message || "Falha desconhecida"}` };
     }
 }
