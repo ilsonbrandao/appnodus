@@ -4,9 +4,12 @@ import React, { useState, useMemo } from 'react';
 import { DndContext, DragEndEvent, DragStartEvent, DragOverlay, useDraggable, useDroppable, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
 import { cn } from '@/lib/utils';
 import { LeadDetailsDialog } from './LeadDetailsDialog';
-import { Phone, Clock, TrendingUp, Users, DollarSign, Search } from 'lucide-react';
+import { Phone, Clock, TrendingUp, Users, DollarSign, Search, MoreHorizontal, ArrowRight } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent as ShadcnCardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent as ShadcnCardContent } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Button } from '@/components/ui/button';
 
 type Lead = {
     id: number;
@@ -23,7 +26,7 @@ type Lead = {
     segment: string | null;
     aiAnalysis: string | null;
     quizData: Record<string, unknown> | null;
-    createdAt?: string; // Optional if not in initial type but in DB
+    createdAt?: string;
 };
 
 const COLUMNS = [
@@ -73,19 +76,22 @@ export function LeadsKanban({ initialLeads }: { initialLeads: Lead[] }) {
         if (over && active.id !== over.id) {
             const leadId = active.id as number;
             const newCategory = over.id as string;
-
-            setLeads((prev) =>
-                prev.map((lead) =>
-                    lead.id === leadId ? { ...lead, category: newCategory } : lead
-                )
-            );
-
-            import('@/actions/leads-management').then(({ updateLeadCategory }) => {
-                updateLeadCategory(leadId, newCategory).then((result) => {
-                    if (result.error) console.error(result.error);
-                });
-            });
+            moveLead(leadId, newCategory);
         }
+    };
+
+    const moveLead = (leadId: number, newCategory: string) => {
+        setLeads((prev) =>
+            prev.map((lead) =>
+                lead.id === leadId ? { ...lead, category: newCategory } : lead
+            )
+        );
+
+        import('@/actions/leads-management').then(({ updateLeadCategory }) => {
+            updateLeadCategory(leadId, newCategory).then((result) => {
+                if (result.error) console.error(result.error);
+            });
+        });
     };
 
     const handleCardClick = (lead: Lead) => {
@@ -138,9 +144,41 @@ export function LeadsKanban({ initialLeads }: { initialLeads: Lead[] }) {
                 />
             </div>
 
-            {/* Kanban Board */}
-            <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-                <div className="flex-1 overflow-x-auto pb-4 touch-pan-x snap-x">
+            {/* MOBILE VIEW (Tabs) */}
+            <div className="md:hidden flex-1 flex flex-col overflow-hidden">
+                <Tabs defaultValue="Cold" className="flex-1 flex flex-col">
+                    <TabsList className="grid w-full grid-cols-4 mb-4">
+                        {COLUMNS.map(col => (
+                            <TabsTrigger key={col.id} value={col.id} className="text-[10px] px-1">{col.title}</TabsTrigger>
+                        ))}
+                    </TabsList>
+
+                    {COLUMNS.map(col => {
+                        const colLeads = filteredLeads.filter(l => (l.category || 'Cold') === col.id);
+                        return (
+                            <TabsContent key={col.id} value={col.id} className="flex-1 overflow-y-auto space-y-3 pb-20">
+                                {colLeads.length === 0 && (
+                                    <div className="text-center py-10 text-neutral-400 text-sm">
+                                        Nenhum lead nesta etapa.
+                                    </div>
+                                )}
+                                {colLeads.map(lead => (
+                                    <MobileLeadCard
+                                        key={lead.id}
+                                        lead={lead}
+                                        onClick={() => handleCardClick(lead)}
+                                        onMove={(newStatus) => moveLead(lead.id, newStatus)}
+                                    />
+                                ))}
+                            </TabsContent>
+                        );
+                    })}
+                </Tabs>
+            </div>
+
+            {/* DESKTOP VIEW (Kanban DND) */}
+            <div className="hidden md:block flex-1 overflow-x-auto pb-4 touch-pan-x snap-x">
+                <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
                     <div className="flex h-full gap-4 min-w-full">
                         {COLUMNS.map((col) => (
                             <KanbanColumn
@@ -153,22 +191,98 @@ export function LeadsKanban({ initialLeads }: { initialLeads: Lead[] }) {
                             />
                         ))}
                     </div>
-                </div>
-
-                <DragOverlay>
-                    {activeLead ? (
-                        <div className="rotate-3 opacity-90 scale-105 cursor-grabbing w-72">
-                            <KanbanCard lead={activeLead} isOverlay />
-                        </div>
-                    ) : null}
-                </DragOverlay>
-            </DndContext>
+                    <DragOverlay>
+                        {activeLead ? (
+                            <div className="rotate-3 opacity-90 scale-105 cursor-grabbing w-72">
+                                <KanbanCard lead={activeLead} isOverlay />
+                            </div>
+                        ) : null}
+                    </DragOverlay>
+                </DndContext>
+            </div>
 
             <LeadDetailsDialog
                 lead={selectedLead}
                 open={isDialogOpen}
                 onOpenChange={setIsDialogOpen}
             />
+        </div>
+    );
+}
+
+function MobileLeadCard({ lead, onClick, onMove }: { lead: Lead, onClick: () => void, onMove: (status: string) => void }) {
+    return (
+        <div
+            onClick={onClick}
+            className="bg-white dark:bg-neutral-900 p-4 rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-sm active:scale-[0.98] transition-transform"
+        >
+            <div className="flex justify-between items-start mb-3">
+                <div className="flex items-center gap-3">
+                    <div className="size-9 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900 dark:to-purple-900 text-indigo-700 dark:text-indigo-300 flex items-center justify-center text-xs font-bold">
+                        {lead.name.substring(0, 2).toUpperCase()}
+                    </div>
+                    <div>
+                        <p className="font-semibold text-neutral-900 dark:text-white leading-tight">{lead.name}</p>
+                        <p className="text-xs text-neutral-500">{lead.company || 'Sem empresa'}</p>
+                    </div>
+                </div>
+
+                {/* Mobile Actions Menu for Moving */}
+                <div onClick={(e) => e.stopPropagation()}>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-8 w-8 -mr-2 text-neutral-400">
+                                <MoreHorizontal className="size-4" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Mover para...</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            {COLUMNS.filter(c => c.id !== (lead.category || 'Cold')).map(col => (
+                                <DropdownMenuItem key={col.id} onClick={() => onMove(col.id)}>
+                                    <div className={cn("size-2 rounded-full mr-2", col.barColor)} />
+                                    {col.title}
+                                </DropdownMenuItem>
+                            ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
+            </div>
+
+            <div className="flex items-center gap-2 mb-3">
+                <span className={cn(
+                    "text-[10px] font-bold px-2 py-0.5 rounded-full border",
+                    (lead.score || 0) > 80
+                        ? "bg-green-50 text-green-700 border-green-200"
+                        : "bg-neutral-50 text-neutral-600 border-neutral-200"
+                )}>
+                    Score: {lead.score || 0}
+                </span>
+                {lead.status && (
+                    <span className="text-[10px] bg-neutral-100 dark:bg-neutral-800 text-neutral-600 px-2 py-0.5 rounded-full">
+                        {lead.status}
+                    </span>
+                )}
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 text-xs text-neutral-500 border-t border-neutral-100 dark:border-neutral-800 pt-3">
+                <div className="flex items-center gap-1.5">
+                    <Clock className="size-3.5" />
+                    <span>2 dias atrás</span>
+                </div>
+                {lead.phone && (
+                    <div
+                        className="flex items-center gap-1.5 text-green-600 font-medium"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            window.open(`https://wa.me/${lead.phone!.replace(/\D/g, '')}`, '_blank');
+                        }}
+                    >
+                        <Phone className="size-3.5" />
+                        <span>WhatsApp</span>
+                    </div>
+                )}
+            </div>
         </div>
     );
 }
