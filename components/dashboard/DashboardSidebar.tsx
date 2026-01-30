@@ -61,17 +61,19 @@ function SidebarContent({ user, profileName, onNavigate }: { user: User, profile
     };
 
     return (
-        <div className="flex flex-col h-full p-6">
-            <div>
-                <div className="flex items-center gap-2 mb-8 text-indigo-600 dark:text-indigo-400">
-                    <div className="flex size-8 items-center justify-center rounded-lg bg-indigo-600">
-                        <svg className="size-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+        <div className="flex flex-col h-full">
+            {/* Sidebar Header */}
+            <div className="flex h-16 items-center border-b border-neutral-200 dark:border-neutral-800 px-6">
+                <div className="flex items-center gap-2 font-bold text-xl text-indigo-600 dark:text-indigo-400">
+                    <div className="flex size-8 items-center justify-center rounded-lg bg-indigo-600 text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-5">
+                            <path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zm0 2v12h16V6H4zm4 3h8v2H8V9zm0 4h8v2H8v-2z" />
                         </svg>
                     </div>
-                    <h1 className="text-xl font-bold text-neutral-900 dark:text-white">AppNodus</h1>
+                    <span className="text-neutral-900 dark:text-white">App Mídia</span>
                 </div>
-
+            </div>
+            <div className="p-6 flex flex-col flex-1">
                 <nav className="space-y-1">
                     {NAV_ITEMS.map((item) => (
                         <Link

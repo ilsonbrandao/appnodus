@@ -108,12 +108,14 @@ function LoginFormContent() {
 
     return (
         <Card className="w-full max-w-md shadow-xl border-neutral-200 dark:border-neutral-800 transition-all duration-300">
-            <CardHeader className="text-center">
-                <div className="mx-auto mb-6 flex size-12 items-center justify-center rounded-xl bg-indigo-600 shadow-lg shadow-indigo-200 dark:shadow-none">
-                    <Lock className="size-6 text-white" />
+            <CardHeader>
+                <div className="flex justify-center mb-4">
+                    <div className="size-12 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-200 dark:shadow-none">
+                        <Lock className="size-6" />
+                    </div>
                 </div>
-                <CardTitle className="text-2xl font-bold tracking-tight">Acesso ao AppNodus</CardTitle>
-                <CardDescription>Gerencie suas vendas e redes sociais em um só lugar.</CardDescription>
+                <CardTitle className="text-2xl font-bold text-center">Acesso ao App Mídia</CardTitle>
+                <p className="text-center text-neutral-500 mt-2 text-sm">Gerencie suas vendas e redes sociais em um só lugar.</p>
             </CardHeader>
             <CardContent>
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">

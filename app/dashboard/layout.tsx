@@ -40,11 +40,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
                 <header className="md:hidden flex items-center justify-between p-4 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950">
                     <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
                         <div className="flex size-6 items-center justify-center rounded-md bg-indigo-600">
-                            <svg className="size-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-3.5 text-white">
+                                <path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zm0 2v12h16V6H4zm4 3h8v2H8V9zm0 4h8v2H8v-2z" />
                             </svg>
                         </div>
-                        <span className="font-bold text-lg text-neutral-900 dark:text-white">AppNodus</span>
+                        <span className="font-bold text-lg text-neutral-900 dark:text-white">App Mídia</span>
                     </div>
                     <MobileSidebar user={user as any} profileName={profileName || ''} />
                 </header>
