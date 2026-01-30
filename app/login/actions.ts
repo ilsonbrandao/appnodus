@@ -71,3 +71,22 @@ export async function signout() {
     await supabase.auth.signOut()
     redirect('/login')
 }
+
+export async function resetPassword(formData: FormData) {
+    const supabase = await createClient()
+    const email = formData.get('email') as string
+
+    // O redirectTo deve apontar para uma rota que trate o token de recuperação
+    // Geralmente /auth/callback que depois joga para uma pagina de update password
+    const origin = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${origin}/auth/callback?next=/dashboard/settings`,
+    })
+
+    if (error) {
+        return { error: error.message }
+    }
+
+    return { success: true }
+}
