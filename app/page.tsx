@@ -3,6 +3,7 @@ import { QuizForm } from '@/components/home/QuizForm';
 import { Toaster } from '@/components/ui/sonner';
 import { Header } from '@/components/home/Header';
 import { FeaturesSection } from '@/components/home/FeaturesSection';
+import { PricingSection } from '@/components/home/PricingSection';
 import { Footer } from '@/components/home/Footer';
 import { Button } from '@/components/ui/button';
 import { LayoutDashboard, ArrowRight, Check } from 'lucide-react';
@@ -94,6 +95,8 @@ export default function Home() {
       </section>
 
       <FeaturesSection />
+
+      <PricingSection />
 
       <Footer />
       <Toaster />
