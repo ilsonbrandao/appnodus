@@ -96,34 +96,34 @@ export function LeadsKanban({ initialLeads }: { initialLeads: Lead[] }) {
     const activeLead = leads.find((lead) => lead.id === activeId);
 
     return (
-        <div className="flex flex-col h-full space-y-6">
-            {/* Header Stats & Filter */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <Card className="shadow-sm border-l-4 border-l-indigo-500">
-                    <ShadcnCardContent className="p-4 flex items-center justify-between">
+        <div className="flex flex-col h-[calc(100vh-140px)] md:h-full space-y-4 md:space-y-6">
+            {/* Header Stats & Filter - Mobile Optimized */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mt-4 md:mt-0">
+                <Card className="shadow-sm border-l-4 border-l-indigo-500 col-span-1">
+                    <ShadcnCardContent className="p-3 md:p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-2">
                         <div>
-                            <p className="text-xs text-neutral-500 uppercase font-semibold">Total Leads</p>
-                            <p className="text-2xl font-bold">{stats.total}</p>
+                            <p className="text-[10px] md:text-xs text-neutral-500 uppercase font-semibold">Total Leads</p>
+                            <p className="text-xl md:text-2xl font-bold">{stats.total}</p>
                         </div>
-                        <Users className="text-indigo-500 opacity-50" />
+                        <Users className="text-indigo-500 opacity-50 size-4 md:size-6" />
                     </ShadcnCardContent>
                 </Card>
-                <Card className="shadow-sm border-l-4 border-l-green-500">
-                    <ShadcnCardContent className="p-4 flex items-center justify-between">
+                <Card className="shadow-sm border-l-4 border-l-green-500 col-span-1">
+                    <ShadcnCardContent className="p-3 md:p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-2">
                         <div>
-                            <p className="text-xs text-neutral-500 uppercase font-semibold">Oportunidades</p>
-                            <p className="text-2xl font-bold">{stats.hot}</p>
+                            <p className="text-[10px] md:text-xs text-neutral-500 uppercase font-semibold">Oportunidades</p>
+                            <p className="text-xl md:text-2xl font-bold">{stats.hot}</p>
                         </div>
-                        <TrendingUp className="text-green-500 opacity-50" />
+                        <TrendingUp className="text-green-500 opacity-50 size-4 md:size-6" />
                     </ShadcnCardContent>
                 </Card>
-                <Card className="shadow-sm border-l-4 border-l-amber-500 col-span-1 md:col-span-2">
-                    <ShadcnCardContent className="p-4 flex items-center justify-between">
+                <Card className="shadow-sm border-l-4 border-l-amber-500 col-span-2 md:col-span-2">
+                    <ShadcnCardContent className="p-3 md:p-4 flex items-center justify-between">
                         <div>
-                            <p className="text-xs text-neutral-500 uppercase font-semibold">Pipeline Estimado</p>
-                            <p className="text-2xl font-bold">R$ {stats.value.toLocaleString('pt-BR')}</p>
+                            <p className="text-[10px] md:text-xs text-neutral-500 uppercase font-semibold">Pipeline Estimado</p>
+                            <p className="text-xl md:text-2xl font-bold">R$ {stats.value.toLocaleString('pt-BR')}</p>
                         </div>
-                        <DollarSign className="text-amber-500 opacity-50" />
+                        <DollarSign className="text-amber-500 opacity-50 size-5 md:size-6" />
                     </ShadcnCardContent>
                 </Card>
             </div>
