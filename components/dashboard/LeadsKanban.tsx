@@ -42,6 +42,11 @@ export function LeadsKanban({ initialLeads }: { initialLeads: Lead[] }) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [activeId, setActiveId] = useState<number | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [mounted, setMounted] = useState(false);
+
+    React.useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -100,6 +105,8 @@ export function LeadsKanban({ initialLeads }: { initialLeads: Lead[] }) {
     };
 
     const activeLead = leads.find((lead) => lead.id === activeId);
+
+    if (!mounted) return null;
 
     return (
         <div className="flex flex-col h-[calc(100vh-140px)] md:h-full space-y-4 md:space-y-6">
