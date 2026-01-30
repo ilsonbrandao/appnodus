@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server'
 import { db } from '@/lib/db'
 import { profiles } from '@/lib/db/schema'
+import { eq } from 'drizzle-orm'
 
 export async function login(formData: FormData) {
     const supabase = await createClient()
@@ -31,6 +32,18 @@ export async function signup(formData: FormData) {
     const email = formData.get('email') as string
     const password = formData.get('password') as string
     const fullName = formData.get('fullName') as string
+
+    // 0. Verificar se já existe no banco (Bypass Supabase Security Obscurity)
+    // Isso é necessário porque o Supabase retorna sucesso falso se "Prevent Email Harvesting" estiver ativo.
+    try {
+        const [existingUser] = await db.select().from(profiles).where(eq(profiles.email, email));
+        if (existingUser) {
+            return { error: "User already registered" };
+        }
+    } catch (e) {
+        console.error("Error checking existing user:", e);
+        // Prossegue se der erro no banco, o Supabase vai tentar lidar
+    }
 
     // 1. Criar usuário no Auth do Supabase
     const { data, error } = await supabase.auth.signUp({

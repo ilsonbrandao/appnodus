@@ -66,7 +66,12 @@ function LoginFormContent() {
             const result = await signup(formData);
 
             if (result?.error) {
-                setRegisterError(result.error);
+                const msg = result.error.toLowerCase();
+                if (msg.includes('user already registered') || msg.includes('multiple users')) {
+                    setRegisterError("Este email já está cadastrado. Tente fazer login.");
+                } else {
+                    setRegisterError(result.error);
+                }
             } else if (result?.success) {
                 setRegisterSuccess(true);
                 toast.success("Conta criada com sucesso!");
