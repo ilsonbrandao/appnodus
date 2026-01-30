@@ -7,14 +7,17 @@ export function Footer() {
             <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
                 <div className="flex flex-col md:flex-row justify-between items-center">
                     <div className="md:w-1/3 mb-8 md:mb-0">
-                        <Link href="/" className="mb-4 block">
+                        <Link href="/" className="mb-4 flex items-center gap-3">
                             <Image
                                 src="/logo.png"
                                 alt="App Mídia"
-                                width={180}
-                                height={60}
-                                className="h-12 w-auto object-contain"
+                                width={40}
+                                height={40}
+                                className="size-10 object-contain rounded-xl"
                             />
+                            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-500">
+                                App Mídia
+                            </span>
                         </Link>
                         <p className="text-neutral-500 dark:text-neutral-400 text-sm leading-relaxed max-w-xs">
                             A plataforma completa para gerenciar suas redes sociais e converter mais leads.

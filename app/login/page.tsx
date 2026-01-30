@@ -110,16 +110,16 @@ function LoginFormContent() {
     return (
         <Card className="w-full max-w-md shadow-xl border-neutral-200 dark:border-neutral-800 transition-all duration-300">
             <CardHeader className="flex flex-col items-center">
-                <div className="mb-6 relative w-48 h-16">
+                <div className="mb-6 relative size-20">
                     <Image
                         src="/logo.png"
                         alt="App Mídia"
                         fill
-                        className="object-contain"
+                        className="object-contain rounded-2xl"
                         priority
                     />
                 </div>
-                <CardTitle className="text-2xl font-bold text-center sr-only">Acesso ao App Mídia</CardTitle>
+                <CardTitle className="text-2xl font-bold text-center">Acesso ao App Mídia</CardTitle>
                 <p className="text-center text-neutral-500 mt-2 text-sm">Gerencie suas vendas e redes sociais em um só lugar.</p>
             </CardHeader>
             <CardContent>

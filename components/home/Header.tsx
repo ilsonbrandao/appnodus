@@ -7,14 +7,15 @@ export function Header() {
         <header className="fixed top-0 w-full z-50 bg-white/50 dark:bg-neutral-950/50 backdrop-blur-md border-b border-transparent dark:border-neutral-800 transition-all duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-20">
-                    <Link href="/" className="flex items-center gap-2">
+                    <Link href="/" className="flex items-center gap-3">
                         <Image
                             src="/logo.png"
                             alt="App Mídia"
-                            width={140}
+                            width={40}
                             height={40}
-                            className="h-10 w-auto object-contain"
+                            className="size-10 object-contain rounded-xl"
                         />
+                        <span className="text-xl font-bold text-neutral-900 dark:text-white">App Mídia</span>
                     </Link>
 
                     <nav className="hidden md:flex gap-8">

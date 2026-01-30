@@ -65,14 +65,15 @@ function SidebarContent({ user, profileName, onNavigate }: { user: User, profile
         <div className="flex flex-col h-full">
             {/* Sidebar Header */}
             <div className="flex h-16 items-center border-b border-neutral-200 dark:border-neutral-800 px-6">
-                <Link href="/dashboard" className="flex items-center gap-2">
+                <Link href="/dashboard" className="flex items-center gap-3">
                     <Image
                         src="/logo.png"
                         alt="App Mídia"
-                        width={140}
-                        height={40}
-                        className="h-8 w-auto object-contain"
+                        width={32}
+                        height={32}
+                        className="size-8 object-contain rounded-lg"
                     />
+                    <span className="font-bold text-xl text-neutral-900 dark:text-white">App Mídia</span>
                 </Link>
             </div>
             <div className="p-6 flex flex-col flex-1">

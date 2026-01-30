@@ -42,14 +42,15 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
 
                 <header className="md:hidden flex items-center justify-between p-4 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950">
-                    <Link href="/dashboard" className="flex items-center gap-2">
+                    <Link href="/dashboard" className="flex items-center gap-3">
                         <Image
                             src="/logo.png"
                             alt="App Mídia"
-                            width={120}
+                            width={32}
                             height={32}
-                            className="h-8 w-auto object-contain"
+                            className="size-8 object-contain rounded-lg"
                         />
+                        <span className="font-bold text-lg text-neutral-900 dark:text-white">App Mídia</span>
                     </Link>
                     <MobileSidebar user={user as any} profileName={profileName || ''} />
                 </header>
