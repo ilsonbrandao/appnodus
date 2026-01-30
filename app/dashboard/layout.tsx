@@ -1,4 +1,6 @@
 import React from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import { db } from '@/lib/db';
@@ -37,15 +39,18 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
             <div className="flex-1 flex flex-col h-full overflow-hidden">
                 {/* Header Mobile (Visible only on Mobile) */}
+
+
                 <header className="md:hidden flex items-center justify-between p-4 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950">
-                    <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
-                        <div className="flex size-6 items-center justify-center rounded-md bg-indigo-600">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-3.5 text-white">
-                                <path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zm0 2v12h16V6H4zm4 3h8v2H8V9zm0 4h8v2H8v-2z" />
-                            </svg>
-                        </div>
-                        <span className="font-bold text-lg text-neutral-900 dark:text-white">App Mídia</span>
-                    </div>
+                    <Link href="/dashboard" className="flex items-center gap-2">
+                        <Image
+                            src="/logo.png"
+                            alt="App Mídia"
+                            width={120}
+                            height={32}
+                            className="h-8 w-auto object-contain"
+                        />
+                    </Link>
                     <MobileSidebar user={user as any} profileName={profileName || ''} />
                 </header>
 

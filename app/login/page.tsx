@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState, Suspense } from 'react';
+import Image from 'next/image';
 import { login, signup, resetPassword } from './actions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -108,13 +109,17 @@ function LoginFormContent() {
 
     return (
         <Card className="w-full max-w-md shadow-xl border-neutral-200 dark:border-neutral-800 transition-all duration-300">
-            <CardHeader>
-                <div className="flex justify-center mb-4">
-                    <div className="size-12 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-200 dark:shadow-none">
-                        <Lock className="size-6" />
-                    </div>
+            <CardHeader className="flex flex-col items-center">
+                <div className="mb-6 relative w-48 h-16">
+                    <Image
+                        src="/logo.png"
+                        alt="App Mídia"
+                        fill
+                        className="object-contain"
+                        priority
+                    />
                 </div>
-                <CardTitle className="text-2xl font-bold text-center">Acesso ao App Mídia</CardTitle>
+                <CardTitle className="text-2xl font-bold text-center sr-only">Acesso ao App Mídia</CardTitle>
                 <p className="text-center text-neutral-500 mt-2 text-sm">Gerencie suas vendas e redes sociais em um só lugar.</p>
             </CardHeader>
             <CardContent>
