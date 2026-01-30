@@ -49,6 +49,8 @@ function LoginFormContent() {
                 } else {
                     setLoginError(result.error);
                 }
+            } else if (result?.success) {
+                router.push('/dashboard');
             }
         } catch (error) {
             setLoginError("Ocorreu um erro inesperado. Tente novamente.");
