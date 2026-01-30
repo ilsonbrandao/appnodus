@@ -29,6 +29,7 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { savePost, generatePostContent } from '@/actions/posts';
 
 const postSchema = z.object({
     platform: z.string().min(1, "Selecione a plataforma"),
@@ -63,21 +64,11 @@ export function PostDialog({ open, onOpenChange }: PostDialogProps) {
     const date = watch('date');
     const platform = watch('platform');
 
-    // Importar dinamicamente as actions para evitar erro de 'use server' em client component se importado errado
-    // Mas em Next.js App Router, actions podem ser importadas.
-    // Vamos assumir que actions/posts.ts está correto.
-
     const handleGenerateAI = async () => {
         if (!topic) return toast.error("Digite um tema para a IA.");
 
         setIsGenerating(true);
         try {
-            // Importar dinamicamente ou usar bind se fosse passado via props. 
-            // Vou usar fetch num endpoint ou assumir que posso importar a action.
-            // Para simplicidade, vou importar a action no topo do arquivo (adicionarei o import num passo separado ou assumirei que o bundler resolve).
-            // Vou usar um truque: chamar a action importada (que vou adicionar no topo).
-
-            const { generatePostContent } = await import('@/actions/posts');
             const result = await generatePostContent(topic, platform || 'linkedin');
 
             if (result.error) {
@@ -103,8 +94,10 @@ export function PostDialog({ open, onOpenChange }: PostDialogProps) {
             formData.append('content', data.content);
             if (data.date) formData.append('date', data.date.toISOString());
             formData.append('status', data.date ? 'Scheduled' : 'Draft');
+            // Enviamos 'platform' mesmo que o banco ainda não tenha, 
+            // a Action pode usar ou ignorar, mas garantimos que sai do front.
+            formData.append('platform', data.platform);
 
-            const { savePost } = await import('@/actions/posts');
             const result = await savePost(formData);
 
             if (result.error) {
@@ -116,6 +109,7 @@ export function PostDialog({ open, onOpenChange }: PostDialogProps) {
                 setTopic("");
             }
         } catch (e) {
+            console.error(e);
             toast.error("Erro inesperado ao salvar.");
         } finally {
             setIsSubmitting(false);

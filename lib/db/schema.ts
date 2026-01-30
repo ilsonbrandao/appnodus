@@ -51,6 +51,7 @@ export const posts = pgTable('posts', {
 
     content: text('content').notNull(),
     mediaUrls: text('media_urls').array(), // Array de URLs
+    platform: text('platform'), // 'instagram', 'linkedin', etc.
 
     scheduledFor: timestamp('scheduled_for'),
     publishedAt: timestamp('published_at'),
