@@ -87,6 +87,7 @@ export function PostDialog({ open, onOpenChange }: PostDialogProps) {
     };
 
     const onSubmit = async (data: PostFormValues) => {
+        console.log("Submit iniciado", data);
         setIsSubmitting(true);
 
         try {
@@ -94,8 +95,6 @@ export function PostDialog({ open, onOpenChange }: PostDialogProps) {
             formData.append('content', data.content);
             if (data.date) formData.append('date', data.date.toISOString());
             formData.append('status', data.date ? 'Scheduled' : 'Draft');
-            // Enviamos 'platform' mesmo que o banco ainda não tenha, 
-            // a Action pode usar ou ignorar, mas garantimos que sai do front.
             formData.append('platform', data.platform);
 
             const result = await savePost(formData);
@@ -108,12 +107,18 @@ export function PostDialog({ open, onOpenChange }: PostDialogProps) {
                 reset();
                 setTopic("");
             }
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
-            toast.error("Erro inesperado ao salvar.");
+            toast.error("Erro inesperado: " + e.message);
         } finally {
             setIsSubmitting(false);
         }
+    };
+
+    const onError = (errors: any) => {
+        console.log("Erros de validação:", errors);
+        const errorMessages = Object.values(errors).map((e: any) => e.message).join(", ");
+        toast.error(`Verifique os campos: ${errorMessages}`);
     };
 
     return (
@@ -126,7 +131,7 @@ export function PostDialog({ open, onOpenChange }: PostDialogProps) {
                     </DialogDescription>
                 </DialogHeader>
 
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-4">
+                <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-4 py-4">
                     <div className="space-y-2">
                         <Label>Plataforma</Label>
                         <Select onValueChange={(val) => setValue('platform', val)}>
